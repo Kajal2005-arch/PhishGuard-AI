@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuard AI | URL Security Scanner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="navbar">
+        <a class="brand" href="/">🛡 PhishGuard<span>AI</span></a>
+        <span class="status"><i></i> ML ENGINE READY</span>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <p class="eyebrow">MACHINE LEARNING · CYBERSECURITY</p>
+            <h1>Don't trust a link.<br><span>Verify it.</span></h1>
+            <p class="subtitle">
+                Analyze URL patterns with a machine learning model
+                to identify potentially suspicious links.
+            </p>
+
+            <form method="POST" class="scanner">
+                <label for="url">URL TO ANALYZE</label>
+                <div class="input-row">
+                    <input
+                        id="url"
+                        name="url"
+                        type="text"
+                        placeholder="https://example.com/login"
+                        value="{{ submitted_url }}"
+                        maxlength="2048"
+                        required
+                    >
+                    <button type="submit">Scan URL ↗</button>
+                </div>
+                <p class="hint">Analysis is based on URL characteristics. The site will not be opened.</p>
+            </form>
+        </section>
+
+        {% if error %}
+        <section class="result error">
+            <h2>Unable to scan</h2>
+            <p>{{ error }}</p>
+        </section>
+        {% endif %}
+
+        {% if result %}
+        <section class="result {% if result.is_phishing %}danger{% else %}safe{% endif %}">
+            <p class="eyebrow">SCAN RESULT</p>
+            <h2>
+                {% if result.is_phishing %}⚠{% else %}✓{% endif %}
+                {{ result.label }}
+            </h2>
+
+            {% if result.probability is not none %}
+            <p class="probability">
+                Model-estimated phishing probability:
+                <strong>{{ result.probability }}%</strong>
+            </p>
+            {% endif %}
+
+            <p class="disclaimer">
+                This is a model prediction, not proof that a URL is
+                malicious or safe. Model probabilities may not be calibrated.
+            </p>
+            
+<h3>Cryptographic threat verification</h3>
+
+<p>
+    <strong>SHA-256 fingerprint:</strong>
+    <code>{{ result.threat_registry.fingerprint }}</code>
+</p>
+
+{% if result.threat_registry.status == "verified_report_found" %}
+    <p>
+        A matching signed threat report was found and its
+        signature verified.
+    </p>
+
+    <ul>
+        {% for report in result.threat_registry.reports %}
+        <li>
+            Report status: {{ report.status | replace("_", " ") }}
+            — Source: {{ report.source }}
+        </li>
+        {% endfor %}
+    </ul>
+
+{% elif result.threat_registry.status == "not_found" %}
+    <p>No matching verified report was found in the local registry.</p>
+
+{% else %}
+    <p>
+        Cryptographic verification is currently unavailable.
+        The registry result could not be confirmed.
+    </p>
+{% endif %}
+
+
+            <h3>URL pattern analysis</h3>
+            <ul>
+                {% for reason in result.reasons %}
+                <li>{{ reason }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+
+        <section class="info-grid">
+            <article class="info-card">
+                <span>01 / DETECT</span>
+                <h3>Pattern analysis</h3>
+                <p>Examines URL structure and suspicious characteristics.</p>
+            </article>
+            <article class="info-card">
+                <span>02 / CLASSIFY</span>
+                <h3>ML prediction</h3>
+                <p>Uses the Random Forest model trained on labeled examples.</p>
+            </article>
+            <article class="info-card">
+                <span>03 / EXPLAIN</span>
+                <h3>Understand the result</h3>
+                <p>Displays simple rules that may help explain a prediction.</p>
+            </article>
+        </section>
+
+        <footer>
+            PhishGuard AI · Student cybersecurity project
+            <p>Never enter passwords or sensitive information into suspicious websites.</p>
+        </footer>
+    </main>
+</body>
+</html>

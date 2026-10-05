@@ -1,0 +1,10 @@
+[
+  {
+    "record": {
+      "url_fingerprint": "a461758d8f4e0782dfa6fe66b6cdd0023c6d6894d56b4866364795c211b780f0",
+      "status": "reported_phishing",
+      "source": "PhishGuard-AI demo"
+    },
+    "signature": "KsdBh4GlVLbd3DBukOAgeezut8Y2wutBOpLcKsVYlcxz0rXEq7JreNBk3FyC2T0ex/0yyqR/4J047CHSjArxBw=="
+  }
+]
